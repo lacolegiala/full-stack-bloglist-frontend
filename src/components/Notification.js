@@ -6,8 +6,11 @@ const Notification = ({ message }) => {
   }
 
   return (
-  <div>{message}</div>
+    <div class="alert">
+      <strong>{message}</strong>
+    </div>
   )
 }
+
 
 export default Notification
