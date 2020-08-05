@@ -2,14 +2,18 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login' 
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [newBlog, setNewBlog] = useState('')
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)  
-  const [errorMessage, setErrorMessage] = useState('')
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -41,9 +45,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setMessage('wrong credentials')
       setTimeout(() => {
-        setErrorMessage(null)
+        setMessage(null)
       }, 5000)
     }
   }
@@ -51,9 +55,9 @@ const App = () => {
   const handleBlogAdd = (event) => {
     event.preventDefault()
     const blogObject = {
-      title: newBlog.title,
-      author: newBlog.author,
-      url: newBlog.url,
+      title: title,
+      author: author,
+      url: url,
       likes: 0
     }
     blogService
@@ -73,6 +77,7 @@ const App = () => {
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
+      <h2>Login</h2>
       <div>
         username
           <input
@@ -105,7 +110,7 @@ const App = () => {
           type="text"
           id="title"
           value={newBlog.title}
-          onChange={({ target }) => setNewBlog.title(target.value)}
+          onChange={({ target }) => setTitle(target.value)}
         />
       </ul>
       <ul>
@@ -114,7 +119,7 @@ const App = () => {
           type="text"
           id="author"
           value={newBlog.author}
-          onChange={({ target }) => setNewBlog.author(target.value)}
+          onChange={({ target }) => setAuthor(target.value)}
         />
       </ul>
       <ul>
@@ -123,7 +128,7 @@ const App = () => {
           type="text"
           id="url"
           value={newBlog.url}
-          onChange={({ target }) => setNewBlog.url(target.value)}
+          onChange={({ target }) => setUrl(target.value)}
         />
       </ul>
       <button type="submit">save</button>
@@ -134,7 +139,6 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <h3>Login</h3>
 
       {user === null && loginForm()}
       {user != null && 
