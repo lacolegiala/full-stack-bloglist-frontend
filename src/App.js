@@ -28,6 +28,7 @@ const App = () => {
       setUser(user)
     }
   }, [])
+
   
 
   const handleLogin = async (event) => {
@@ -66,11 +67,21 @@ const App = () => {
         setBlogs(blogs.concat(returnedBlog))
         setNewBlog('')
       })
-  }
+    setMessage(
+      'New blog called ' + blogObject.title + ' added by ' + blogObject.author
+    )
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
+    }
 
   const logout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+    setMessage('Logged out')
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
     setUsername('')
     setPassword('')
   }
@@ -139,6 +150,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification class="alert" message={message}></Notification>
 
       {user === null && loginForm()}
       {user != null && 
