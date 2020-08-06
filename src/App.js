@@ -14,6 +14,7 @@ const App = () => {
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)  
   const [message, setMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -46,44 +47,61 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setMessage('wrong credentials')
+      setErrorMessage('wrong credentials')
       setTimeout(() => {
-        setMessage(null)
+        setErrorMessage(null)
       }, 5000)
     }
   }
 
   const handleBlogAdd = (event) => {
     event.preventDefault()
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url,
-      likes: 0
+    try {
+      const blogObject = {
+        title: title,
+        author: author,
+        url: url,
+        likes: 0
+      }
+      blogService
+        .create(blogObject)
+        .then(returnedBlog => {
+          setBlogs(blogs.concat(returnedBlog))
+          setNewBlog('')
+        })
+      setMessage(
+        'New blog called ' + blogObject.title + ' added by ' + blogObject.author
+      )
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     }
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setNewBlog('')
-      })
-    setMessage(
-      'New blog called ' + blogObject.title + ' added by ' + blogObject.author
-    )
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
+    catch (exception) {
+      setErrorMessage('Creating failed')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
+  }
 
   const logout = () => {
-    window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
-    setMessage('Logged out')
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
-    setUsername('')
-    setPassword('')
+    try {
+      window.localStorage.removeItem('loggedBlogappUser')
+      setUser(null)
+      setMessage('Logged out')
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+      setUsername('')
+      setPassword
+      ('')
+    }
+    catch (exception) {
+      setErrorMessage('Logging out failed')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
 
   const loginForm = () => (
@@ -150,7 +168,8 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      {message !== '' && <Notification message={message}></Notification>}
+      {message !== '' && <Notification.Notification message={message}></Notification.Notification>}
+      {errorMessage !== '' && <Notification.ErrorNotification message={errorMessage}></Notification.ErrorNotification>}
 
       {user === null && loginForm()}
       {user != null && 
