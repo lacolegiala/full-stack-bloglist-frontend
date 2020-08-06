@@ -1,4 +1,5 @@
 import React from 'react'
+import '../App.css'
 
 const Notification = ({ message }) => {
   if (message === null) {
@@ -6,7 +7,7 @@ const Notification = ({ message }) => {
   }
 
   return (
-    <div class="alert">
+    <div className="Notification">
       <strong>{message}</strong>
     </div>
   )

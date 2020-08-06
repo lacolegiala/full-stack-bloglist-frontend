@@ -150,7 +150,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification class="alert" message={message}></Notification>
+      {message !== '' && <Notification message={message}></Notification>}
 
       {user === null && loginForm()}
       {user != null && 
