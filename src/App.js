@@ -3,10 +3,10 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login' 
 import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [newBlog, setNewBlog] = useState('')
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -15,6 +15,7 @@ const App = () => {
   const [user, setUser] = useState(null)  
   const [message, setMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [showBlogForm, setShowBlogForm] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -27,6 +28,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -54,7 +56,7 @@ const App = () => {
     }
   }
 
-  const handleBlogAdd = (event) => {
+  const handleBlogAdd = async (event) => {
     event.preventDefault()
     try {
       const blogObject = {
@@ -63,18 +65,20 @@ const App = () => {
         url: url,
         likes: 0
       }
-      blogService
-        .create(blogObject)
-        .then(returnedBlog => {
-          setBlogs(blogs.concat(returnedBlog))
-          setNewBlog('')
-        })
+      console.log(blogObject)
+      const newBlog = await blogService.create(blogObject)
+      setAuthor('')
+      setTitle('')
+      setUrl('')
+      setBlogs(blogs.concat(newBlog))
+      setShowBlogForm(false)
       setMessage(
         'New blog called ' + blogObject.title + ' added by ' + blogObject.author
       )
       setTimeout(() => {
         setMessage(null)
       }, 5000)
+      console.log(title, author, url)
     }
     catch (exception) {
       setErrorMessage('Creating failed')
@@ -93,8 +97,7 @@ const App = () => {
         setMessage(null)
       }, 5000)
       setUsername('')
-      setPassword
-      ('')
+      setPassword('')
     }
     catch (exception) {
       setErrorMessage('Logging out failed')
@@ -130,39 +133,32 @@ const App = () => {
   )
 
 
-  const blogForm = () => (
-    <form onSubmit={handleBlogAdd}>
-      <h2>Add a new blog</h2>
-      <ul>
-        <label htmlFor="title">Title: </label>
-        <input
-          type="text"
-          id="title"
-          value={newBlog.title}
-          onChange={({ target }) => setTitle(target.value)}
-        />
-      </ul>
-      <ul>
-        <label htmlFor="author">Author: </label>
-        <input
-          type="text"
-          id="author"
-          value={newBlog.author}
-          onChange={({ target }) => setAuthor(target.value)}
-        />
-      </ul>
-      <ul>
-        <label htmlFor="url">Url: </label>
-        <input
-          type="text"
-          id="url"
-          value={newBlog.url}
-          onChange={({ target }) => setUrl(target.value)}
-        />
-      </ul>
-      <button type="submit">save</button>
-    </form>  
-  )
+  const blogForm = () => {
+    const hide = { display: showBlogForm ? 'none' : '' }
+    const show = { display: showBlogForm ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={hide}>
+          <button onClick={() => setShowBlogForm(true)}>Create a new blog</button>
+        </div>
+        <div style={show}>
+          <BlogForm 
+            handleBlogAdd={handleBlogAdd}
+            setTitle={setTitle}
+            setAuthor={setAuthor}
+            setUrl={setUrl}
+            author={author}
+            title={title}
+            url={url}
+          />
+          <button onClick={() => setShowBlogForm(false)}>cancel</button>
+        </div>
+      </div>
+    )
+
+  }
+
 
 
   return (
@@ -178,7 +174,6 @@ const App = () => {
             {user.username} logged in
             <button onClick={logout}>Logout</button>
           </ul>
-          
           {blogForm()}
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
