@@ -4,18 +4,15 @@ import blogService from './services/blogs'
 import loginService from './services/login' 
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)  
   const [message, setMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
-  const [showBlogForm, setShowBlogForm] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -31,8 +28,6 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
-  
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -56,38 +51,6 @@ const App = () => {
     }
   }
 
-  const handleBlogAdd = async (event) => {
-    event.preventDefault()
-    try {
-      const blogObject = {
-        title: title,
-        author: author,
-        url: url,
-        likes: 0
-      }
-      console.log(blogObject)
-      const newBlog = await blogService.create(blogObject)
-      setAuthor('')
-      setTitle('')
-      setUrl('')
-      setBlogs(blogs.concat(newBlog))
-      setShowBlogForm(false)
-      setMessage(
-        'New blog called ' + blogObject.title + ' added by ' + blogObject.author
-      )
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-      console.log(title, author, url)
-    }
-    catch (exception) {
-      setErrorMessage('Creating failed')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-  }
-
   const logout = () => {
     try {
       window.localStorage.removeItem('loggedBlogappUser')
@@ -101,6 +64,25 @@ const App = () => {
     }
     catch (exception) {
       setErrorMessage('Logging out failed')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
+  const addBlog = async (blogObject) => {
+    try {
+      const newBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(newBlog))
+      setMessage(
+        'New blog called ' + blogObject.title + ' added by ' + blogObject.author
+      )
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    }
+    catch (exception) {
+      setErrorMessage('Creating failed')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -134,29 +116,13 @@ const App = () => {
 
 
   const blogForm = () => {
-    const hide = { display: showBlogForm ? 'none' : '' }
-    const show = { display: showBlogForm ? '' : 'none' }
-
     return (
       <div>
-        <div style={hide}>
-          <button onClick={() => setShowBlogForm(true)}>Create a new blog</button>
-        </div>
-        <div style={show}>
-          <BlogForm 
-            handleBlogAdd={handleBlogAdd}
-            setTitle={setTitle}
-            setAuthor={setAuthor}
-            setUrl={setUrl}
-            author={author}
-            title={title}
-            url={url}
-          />
-          <button onClick={() => setShowBlogForm(false)}>cancel</button>
-        </div>
+        <Togglable buttonLabel='Create a new blog'>
+          <BlogForm createBlog={addBlog}></BlogForm>
+        </Togglable>
       </div>
     )
-
   }
 
 
@@ -180,7 +146,6 @@ const App = () => {
           )}
         </div>
       }
-
     </div>
   )
 }
