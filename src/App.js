@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
-import loginService from './services/login' 
+import loginService from './services/login'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
-  const [user, setUser] = useState(null)  
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
   const [message, setMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -19,7 +19,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -39,8 +39,8 @@ const App = () => {
       })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) 
-      
+      )
+
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -97,7 +97,7 @@ const App = () => {
       <h2>Login</h2>
       <div>
         username
-          <input
+        <input
           type="text"
           value={username}
           name="Username"
@@ -106,7 +106,7 @@ const App = () => {
       </div>
       <div>
         password
-          <input
+        <input
           type="password"
           value={password}
           name="Password"
@@ -114,7 +114,7 @@ const App = () => {
         />
       </div>
       <button type="submit">login</button>
-    </form>  
+    </form>
   )
 
 
@@ -137,7 +137,7 @@ const App = () => {
       {errorMessage !== '' && <Notification.ErrorNotification message={errorMessage}></Notification.ErrorNotification>}
 
       {user === null && loginForm()}
-      {user != null && 
+      {user !== null &&
         <div>
           <ul>
             {user.username} logged in
