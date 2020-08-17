@@ -4,23 +4,44 @@ import React, { useState } from 'react'
 
 const Blog = ({ blog }) => {
   const [showAll, setShowAll] = useState(false)
-  const [text, setText] = useState('View')
+  const [text, setText] = useState('View all data')
+
+  const blogStyle = {
+    paddingTop: 8,
+    paddingLeft: 5,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 4
+  }
+
+  const clickableTitle = {
+    background: 'none',
+    border: 'none'
+  }
 
   const handleClick = () => {
     setShowAll(!showAll)
-    if (text === 'View') {
+    if (text === 'View all data') {
       setText('Hide')
     }
     else {
-      setText('View')
+      setText('View all data')
     }
   }
 
   return (
-    <div>
-      {blog.title} {blog.author}
+    <div style={blogStyle}>
+      <button className="link" style={clickableTitle} onClick={handleClick}>{blog.title}</button>
+      {blog.author}
       <button onClick={handleClick}>{text}</button>
-      {showAll === true && <div>{blog.url} {blog.likes}</div>}
+      {showAll === true &&
+        <div>
+          <ul>{blog.url}</ul>
+          <ul>{blog.likes}
+            <button>Like</button>
+          </ul>
+          <ul>{blog.user.username}</ul>
+        </div>}
     </div>
   )
 }
