@@ -22,6 +22,7 @@ const App = () => {
     )
   }, [])
 
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
@@ -76,6 +77,7 @@ const App = () => {
     try {
       blogFormRef.current.toggleVisibility()
       const newBlog = await blogService.create(blogObject)
+      console.log('NEWBLOGGG', newBlog)
       setBlogs(blogs.concat(newBlog))
       setMessage(
         'New blog called ' + blogObject.title + ' added by ' + blogObject.author
@@ -86,6 +88,26 @@ const App = () => {
     }
     catch (exception) {
       setErrorMessage('Creating failed')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
+  const handleLike = async (blogObject) => {
+    try {
+      const likedBlog = await blogService.edit(blogObject.id, blogObject)
+      console.log('LIKEDBLOGGG', likedBlog)
+      setBlogs(blogs.map(blog => blog.id !== blogObject.id ? blog : likedBlog))
+      setMessage(
+        'Liked'
+      )
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    }
+    catch (exception) {
+      setErrorMessage('Something went wrong')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -122,7 +144,7 @@ const App = () => {
     return (
       <div>
         <Togglable buttonLabel='Create a new blog' ref={blogFormRef}>
-          <BlogForm createBlog={addBlog}></BlogForm>
+          <BlogForm createBlog={addBlog} handleLike={handleLike}></BlogForm>
         </Togglable>
       </div>
     )
@@ -144,7 +166,7 @@ const App = () => {
           </ul>
           {blogForm()}
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog}/>
+            <Blog key={blog.id} blog={blog} handleLike={handleLike} user={user}/>
           )}
         </div>
       }
