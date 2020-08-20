@@ -42,3 +42,29 @@ test('renders url and likes when the button is clicked', async () => {
     'does.com' && 2
   )
 })
+
+test('handleLike gets called', async () => {
+  const blog = {
+    title: 'This is the best blog ever',
+    author: 'Jane Doe',
+    url: 'does.com',
+    likes: 2,
+    user: {
+      username: 'hihii'
+    }
+  }
+
+  const mockHandler = jest.fn()
+
+  const component = render(
+    <Blog blog={blog} handleLike={mockHandler}></Blog>
+  )
+
+  const viewAllData = component.getByText('View all data')
+  fireEvent.click(viewAllData)
+
+  const like = component.getByText('Like')
+  fireEvent.click(like)
+  fireEvent.click(like)
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})
