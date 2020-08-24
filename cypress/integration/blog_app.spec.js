@@ -1,3 +1,5 @@
+const { func } = require("prop-types")
+
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
@@ -45,6 +47,22 @@ describe('Blog app', function() {
 
       cy.contains('New blog called Tournée du Chat Noir added by Rodolphe Salis')
       cy.get('#bloglist').contains('Tournée du Chat Noir')
+    })
+
+    it('A blog can be liked', function() {
+      cy.get('#create').click()
+      cy.get('#title').type('Tournée du Chat Noir')
+      cy.get('#author').type('Rodolphe Salis')
+      cy.get('#url').type('chatnoir.com')
+      cy.get('#blog-submit').click()
+
+      cy.get('#bloglist').contains('Tournée du Chat Noir')
+        .click()
+
+      cy.contains('Like')
+      .click()
+
+      cy.get('.Notification').contains('Liked')
     })
   })
 })
