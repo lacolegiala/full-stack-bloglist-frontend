@@ -43,7 +43,7 @@ const Blog = ({ blog, handleLike }) => {
 
 
   return (
-    <div style={blogStyle}>
+    <div id='bloglist' style={blogStyle}>
       <button className="link" style={clickableTitle} onClick={handleClick}>{blog.title}</button>
       {blog.author}
       <button onClick={handleClick}>{text}</button>

@@ -44,6 +44,7 @@ describe('Blog app', function() {
       cy.get('#blog-submit').click()
 
       cy.contains('New blog called Tournée du Chat Noir added by Rodolphe Salis')
+      cy.get('#bloglist').contains('Tournée du Chat Noir')
     })
   })
 })
