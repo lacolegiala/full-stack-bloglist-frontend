@@ -19,7 +19,7 @@ const ErrorNotification = ({ message }) => {
   }
 
   return (
-    <div className="ErrorNotification">
+    <div className="error">
       <strong>{message}</strong>
     </div>
   )
