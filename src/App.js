@@ -77,7 +77,6 @@ const App = () => {
     try {
       blogFormRef.current.toggleVisibility()
       const newBlog = await blogService.create(blogObject)
-      console.log('NEWBLOGGG', newBlog)
       setBlogs(blogs.concat(newBlog))
       setMessage(
         'New blog called ' + blogObject.title + ' added by ' + blogObject.author
@@ -97,7 +96,6 @@ const App = () => {
   const handleLike = async (blogObject) => {
     try {
       const likedBlog = await blogService.edit(blogObject.id, blogObject)
-      console.log('LIKEDBLOGGG', likedBlog)
       setBlogs(blogs.map(blog => blog.id !== blogObject.id ? blog : likedBlog))
       setMessage(
         'Liked'
