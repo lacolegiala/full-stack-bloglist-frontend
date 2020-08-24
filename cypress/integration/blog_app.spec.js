@@ -26,5 +26,6 @@ describe('Blog app', function() {
     cy.get('#login').click()
 
     cy.get('.error').contains('wrong credentials')
+    cy.get('.error').should('have.css', 'color', 'rgb(255, 0, 0)')
   })
 })
