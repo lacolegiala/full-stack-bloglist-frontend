@@ -34,7 +34,7 @@
   margin-bottom: 15px;
 }
 
-.ErrorNotification {
+.error {
   color: red;
   background: lightgrey;
   font-size: 15px;
