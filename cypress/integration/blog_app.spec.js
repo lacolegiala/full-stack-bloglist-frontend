@@ -28,4 +28,22 @@ describe('Blog app', function() {
     cy.get('.error').contains('wrong credentials')
     cy.get('.error').should('have.css', 'color', 'rgb(255, 0, 0)')
   })
+
+  describe.only('When logged in', function() {
+    beforeEach(function() {
+      cy.get('#username').type('mluukkai')
+      cy.get('#password').type('salainen')
+      cy.get('#login').click()
+    })
+
+    it('A blog can be created', function() {
+      cy.get('#create').click()
+      cy.get('#title').type('Tournée du Chat Noir')
+      cy.get('#author').type('Rodolphe Salis')
+      cy.get('#url').type('chatnoir.com')
+      cy.get('#blog-submit').click()
+
+      cy.contains('New blog called Tournée du Chat Noir added by Rodolphe Salis')
+    })
+  })
 })
