@@ -115,10 +115,11 @@ const App = () => {
   const handleRemove = async (blogObject) => {
     try {
       if (window.confirm('Do you want to delete blog ' + blogObject.title + '?')) {
+        const removableBlogTitle = blogObject.title
         const removableBlog = await blogService.remove(blogObject.id, blogObject)
         setBlogs(blogs.filter(blog => blog.id !== removableBlog.id))
         setMessage(
-          'Removed blog ' + removableBlog.id
+          'Removed blog ' + removableBlogTitle
         )
         setTimeout(() => {
           setMessage(null)

@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 const Blog = ({ blog, handleLike, handleRemoveBlog, user }) => {
   const [showAll, setShowAll] = useState(false)
   const [text, setText] = useState('View all data')
+  const [removed, setRemoved] = useState(false)
 
   const blogStyle = {
     paddingTop: 8,
@@ -51,24 +52,32 @@ const Blog = ({ blog, handleLike, handleRemoveBlog, user }) => {
       id: blog.id,
       user: blog.user
     })
+    setRemoved(true)
   }
 
-  return (
-    <div id='bloglist' style={blogStyle}>
-      <button className="link" style={clickableTitle} onClick={handleClick}>{blog.title}</button>
-      {blog.author}
-      <button onClick={handleClick}>{text}</button>
-      {showAll === true &&
-        <div>
-          <ul>{blog.url}</ul>
-          <ul>{blog.likes}
-            <button onClick={like}>Like</button>
-          </ul>
-          <ul>{blog.user.username}</ul>
-            <button onClick={removeBlog}>Remove</button>
-        </div>}
-    </div>
-  )
+  if (!removed) {
+    return (
+      <div id='bloglist' style={blogStyle}>
+        <button className="link" style={clickableTitle} onClick={handleClick}>{blog.title}</button>
+        {blog.author}
+        <button onClick={handleClick}>{text}</button>
+        {showAll === true &&
+          <div>
+            <ul>{blog.url}</ul>
+            <ul>{blog.likes}
+              <button onClick={like}>Like</button>
+            </ul>
+            <ul>{blog.user.username}</ul>
+            {blog.user.username === user.username &&
+              <button onClick={removeBlog}>Remove</button>
+            }
+          </div>}
+      </div>
+    )
+  }
+  else {
+    return (<div></div>)
+  }
 }
 
 export default Blog
