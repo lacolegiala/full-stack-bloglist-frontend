@@ -43,16 +43,18 @@ const Blog = ({ blog, handleLike, handleRemoveBlog, user }) => {
   }
 
   const removeBlog = async (event) => {
-    event.preventDefault()
-    handleRemoveBlog({
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: blog.likes,
-      id: blog.id,
-      user: blog.user
-    })
-    setRemoved(true)
+    if (window.confirm('Do you want to delete blog ' + blog.title + '?')) {
+      event.preventDefault()
+      handleRemoveBlog({
+        title: blog.title,
+        author: blog.author,
+        url: blog.url,
+        likes: blog.likes,
+        id: blog.id,
+        user: blog.user
+      })
+      setRemoved(true)
+    }
   }
 
   if (!removed) {
