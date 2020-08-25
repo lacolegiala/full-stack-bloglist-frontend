@@ -112,6 +112,27 @@ const App = () => {
     }
   }
 
+  const handleRemove = async (blogObject) => {
+    try {
+      if (window.confirm('Do you want to delete blog ' + blogObject.title + '?')) {
+        const removableBlog = await blogService.remove(blogObject.id, blogObject)
+        setBlogs(blogs.filter(blog => blog.id !== removableBlog.id))
+        setMessage(
+          'Removed blog ' + removableBlog.id
+        )
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      }
+    }
+    catch (exception) {
+      setErrorMessage('Failed to delete blog')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <h2>Login</h2>
@@ -166,7 +187,7 @@ const App = () => {
           </ul>
           {blogForm()}
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} handleLike={handleLike} user={user}/>
+            <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemoveBlog={handleRemove} user={user}/>
           )}
         </div>
       }

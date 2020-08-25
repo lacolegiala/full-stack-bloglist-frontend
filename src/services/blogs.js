@@ -27,4 +27,10 @@ const edit = async (id, newBlogObject) => {
   return response.data
 }
 
-export default { getAll, create, setToken, edit }
+const remove = async (id, removableBlogObject) => {
+  const request = axios.delete(`${baseUrl}/${id}`, removableBlogObject)
+  const response = await request
+  return response.data
+}
+
+export default { getAll, create, setToken, edit, remove }

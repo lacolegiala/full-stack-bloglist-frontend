@@ -2,7 +2,7 @@
 //Fix later
 import React, { useState } from 'react'
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, handleLike, handleRemoveBlog, user }) => {
   const [showAll, setShowAll] = useState(false)
   const [text, setText] = useState('View all data')
 
@@ -41,6 +41,17 @@ const Blog = ({ blog, handleLike }) => {
     })
   }
 
+  const removeBlog = async (event) => {
+    event.preventDefault()
+    handleRemoveBlog({
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes,
+      id: blog.id,
+      user: blog.user
+    })
+  }
 
   return (
     <div id='bloglist' style={blogStyle}>
@@ -54,6 +65,7 @@ const Blog = ({ blog, handleLike }) => {
             <button onClick={like}>Like</button>
           </ul>
           <ul>{blog.user.username}</ul>
+            <button onClick={removeBlog}>Remove</button>
         </div>}
     </div>
   )
