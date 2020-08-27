@@ -6,6 +6,9 @@ describe('Blog app', function() {
     cy.request('POST', 'http://localhost:3001/api/users', {
       username: 'mluukkai', password: 'salainen'
     })
+    cy.request('POST', 'http://localhost:3001/api/users', {
+      username: 'hihii', password: 'hulihulihei'
+    })
     cy.visit('http://localhost:3000')
   })
 
@@ -79,6 +82,26 @@ describe('Blog app', function() {
       .click()
 
       cy.get('.Notification'). contains('Removed blog Tournée du Chat Noir')
+    })
+
+    it('A user cannot remove a blog they did not create', function() {
+      cy.get('#create').click()
+      cy.get('#title').type('Tournée du Chat Noir')
+      cy.get('#author').type('Rodolphe Salis')
+      cy.get('#url').type('chatnoir.com')
+      cy.get('#blog-submit').click()
+
+      cy.contains('Logout')
+      .click()
+
+      cy.get('#username').type('hihii')
+      cy.get('#password').type('hulihulihei')
+      cy.get('#login').click()
+
+      cy.get('#bloglist').contains('Tournée du Chat Noir')
+      .click()
+
+      cy.get('html').should('not.contain', 'Remove')
     })
   })
 })
