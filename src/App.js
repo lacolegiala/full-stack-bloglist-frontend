@@ -172,7 +172,7 @@ const App = () => {
 
   const sortedBlogs = [].concat(blogs)
     .sort((a, b) => a.likes > b.likes ? -1 : 1)
-    .map((blog, id) => 
+    .map((blog) => 
       <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemoveBlog={handleRemove} user={user}></Blog>
     )
 
