@@ -52,56 +52,49 @@ describe('Blog app', function() {
       cy.get('#bloglist').contains('Tournée du Chat Noir')
     })
 
-    it('A blog can be liked', function() {
-      cy.get('#create').click()
-      cy.get('#title').type('Tournée du Chat Noir')
-      cy.get('#author').type('Rodolphe Salis')
-      cy.get('#url').type('chatnoir.com')
-      cy.get('#blog-submit').click()
+    describe('When a blog has been created', function() {
+      beforeEach(function() {
+        cy.get('#create').click()
+        cy.get('#title').type('Tournée du Chat Noir')
+        cy.get('#author').type('Rodolphe Salis')
+        cy.get('#url').type('chatnoir.com')
+        cy.get('#blog-submit').click()
+      })
 
-      cy.get('#bloglist').contains('Tournée du Chat Noir')
+      it('A blog can be liked', function() {
+        cy.get('#bloglist').contains('Tournée du Chat Noir')
+          .click()
+  
+        cy.contains('Like')
         .click()
-
-      cy.contains('Like')
-      .click()
-
-      cy.get('.Notification').contains('Liked')
-    })
-
-    it('A blog can be removed', function() {
-      cy.get('#create').click()
-      cy.get('#title').type('Tournée du Chat Noir')
-      cy.get('#author').type('Rodolphe Salis')
-      cy.get('#url').type('chatnoir.com')
-      cy.get('#blog-submit').click()
-
-      cy.get('#bloglist').contains('Tournée du Chat Noir')
+  
+        cy.get('.Notification').contains('Liked')
+      })
+  
+      it('A blog can be removed', function() {
+        cy.get('#bloglist').contains('Tournée du Chat Noir')
+          .click()
+  
+        cy.contains('Remove')
         .click()
-
-      cy.contains('Remove')
-      .click()
-
-      cy.get('.Notification'). contains('Removed blog Tournée du Chat Noir')
+  
+        cy.get('.Notification'). contains('Removed blog Tournée du Chat Noir')
+      })
+  
+      it('A user cannot remove a blog they did not create', function() {
+        cy.contains('Logout')
+        .click()
+  
+        cy.get('#username').type('hihii')
+        cy.get('#password').type('hulihulihei')
+        cy.get('#login').click()
+  
+        cy.get('#bloglist').contains('Tournée du Chat Noir')
+        .click()
+  
+        cy.get('html').should('not.contain', 'Remove')
+      })
     })
 
-    it('A user cannot remove a blog they did not create', function() {
-      cy.get('#create').click()
-      cy.get('#title').type('Tournée du Chat Noir')
-      cy.get('#author').type('Rodolphe Salis')
-      cy.get('#url').type('chatnoir.com')
-      cy.get('#blog-submit').click()
-
-      cy.contains('Logout')
-      .click()
-
-      cy.get('#username').type('hihii')
-      cy.get('#password').type('hulihulihei')
-      cy.get('#login').click()
-
-      cy.get('#bloglist').contains('Tournée du Chat Noir')
-      .click()
-
-      cy.get('html').should('not.contain', 'Remove')
-    })
   })
 })
