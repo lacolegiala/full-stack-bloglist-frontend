@@ -83,13 +83,13 @@ const App = () => {
       )
       setTimeout(() => {
         setMessage(null)
-      }, 5000)
+      }, 3000)
     }
     catch (exception) {
       setErrorMessage('Creating failed')
       setTimeout(() => {
         setErrorMessage(null)
-      }, 5000)
+      }, 3000)
     }
   }
 
