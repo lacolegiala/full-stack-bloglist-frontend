@@ -59,8 +59,8 @@ const Blog = ({ blog, handleLike, handleRemoveBlog, user }) => {
 
   if (!removed) {
     return (
-      <div id='bloglist' style={blogStyle}>
-        <button className="link" style={clickableTitle} onClick={handleClick}>{blog.title}</button>
+      <div className='bloglist' style={blogStyle}>
+        <button id='title-button' className="link" style={clickableTitle} onClick={handleClick}>{blog.title}</button>
         {blog.author}
         <button onClick={handleClick}>{text}</button>
         {showAll === true &&
