@@ -5,9 +5,10 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import { useDispatch, useSelector } from 'react-redux'
+import { voteAction, createBlog, removeBlog, initializeBlogs } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -15,12 +16,14 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState('')
 
   const blogFormRef = useRef()
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
+  const blogs = useSelector(state => state)
+
 
 
   useEffect(() => {
@@ -76,8 +79,7 @@ const App = () => {
   const addBlog = async (blogObject) => {
     try {
       blogFormRef.current.toggleVisibility()
-      const newBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(newBlog))
+      dispatch(createBlog(blogObject))
       setMessage(
         'New blog called ' + blogObject.title + ' added by ' + blogObject.author
       )
@@ -95,8 +97,7 @@ const App = () => {
 
   const handleLike = async (blogObject) => {
     try {
-      const likedBlog = await blogService.edit(blogObject.id, blogObject)
-      setBlogs(blogs.map(blog => blog.id !== blogObject.id ? blog : likedBlog))
+      dispatch(voteAction(blogObject.id, blogObject))
       setMessage(
         'Liked'
       )
@@ -115,8 +116,7 @@ const App = () => {
   const handleRemove = async (blogObject) => {
     try {
       const removableBlogTitle = blogObject.title
-      const removableBlog = await blogService.remove(blogObject.id, blogObject)
-      setBlogs(blogs.filter(blog => blog.id !== removableBlog.id))
+      dispatch(removeBlog(blogObject.id))
       setMessage(
         'Removed blog ' + removableBlogTitle
       )
