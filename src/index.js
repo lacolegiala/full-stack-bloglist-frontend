@@ -5,9 +5,6 @@ import App from './App'
 
 import store from './store'
 
-// const store = createStore()
-
-
 const renderApp = () => {
   ReactDOM.render(
     <Provider store={store}>

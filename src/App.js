@@ -7,13 +7,12 @@ import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import { useDispatch, useSelector } from 'react-redux'
 import { voteAction, createBlog, removeBlog, initializeBlogs } from './reducers/blogReducer'
+import { setNotification, setErrorNotification } from './reducers/notificationReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
 
   const blogFormRef = useRef()
   const dispatch = useDispatch()
@@ -22,9 +21,9 @@ const App = () => {
     dispatch(initializeBlogs())
   }, [dispatch])
 
-  const blogs = useSelector(state => state)
+  const blogs = useSelector(state => state.blogs)
 
-
+  const notification = useSelector(state => state.notifications)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -50,10 +49,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(setErrorNotification('wrong credentials', 3))
     }
   }
 
@@ -61,18 +57,12 @@ const App = () => {
     try {
       window.localStorage.removeItem('loggedBlogappUser')
       setUser(null)
-      setMessage('Logged out')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(setNotification('Logged out', 3))
       setUsername('')
       setPassword('')
     }
     catch (exception) {
-      setErrorMessage('Logging out failed')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(setErrorNotification('Logging out failed', 3))
     }
   }
 
@@ -80,36 +70,20 @@ const App = () => {
     try {
       blogFormRef.current.toggleVisibility()
       dispatch(createBlog(blogObject))
-      setMessage(
-        'New blog called ' + blogObject.title + ' added by ' + blogObject.author
-      )
-      setTimeout(() => {
-        setMessage(null)
-      }, 3000)
+      dispatch(setNotification('New blog called ' + blogObject.title + ' added by ' + blogObject.author, 3))
     }
     catch (exception) {
-      setErrorMessage('Creating failed')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000)
+      dispatch(setErrorNotification('Creating failed', 3))
     }
   }
 
   const handleLike = async (blogObject) => {
     try {
       dispatch(voteAction(blogObject.id, blogObject))
-      setMessage(
-        'Liked'
-      )
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(setNotification('Liked', 3))
     }
     catch (exception) {
-      setErrorMessage('Something went wrong')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(setErrorNotification('Something went wrong', 3))
     }
   }
 
@@ -117,18 +91,10 @@ const App = () => {
     try {
       const removableBlogTitle = blogObject.title
       dispatch(removeBlog(blogObject.id))
-      setMessage(
-        'Removed blog ' + removableBlogTitle
-      )
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(setNotification('Removed blog ' + removableBlogTitle, 3))
     }
     catch (exception) {
-      setErrorMessage('Failed to delete blog')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(setErrorNotification('Failed to delete blog', 3))
     }
   }
 
@@ -179,8 +145,8 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      {message !== '' && <Notification.Notification message={message}></Notification.Notification>}
-      {errorMessage !== '' && <Notification.ErrorNotification message={errorMessage}></Notification.ErrorNotification>}
+      {notification.text !== undefined && <Notification.Notification message={notification.text}></Notification.Notification>}
+      {notification.error !== undefined && <Notification.ErrorNotification message={notification.error}></Notification.ErrorNotification>}
       {user === null && loginForm()}
       {user !== null &&
         <div>
