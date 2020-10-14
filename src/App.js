@@ -8,6 +8,7 @@ import Togglable from './components/Togglable'
 import { useDispatch, useSelector } from 'react-redux'
 import { voteAction, createBlog, removeBlog, initializeBlogs } from './reducers/blogReducer'
 import { setNotification, setErrorNotification } from './reducers/notificationReducer'
+import { loginUser, logoutUser } from './reducers/userReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -25,6 +26,8 @@ const App = () => {
 
   const notification = useSelector(state => state.notifications)
 
+  const reduxUser = useSelector(state => state.user)
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
@@ -37,15 +40,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({
-        username, password
-      })
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
-
-      blogService.setToken(user.token)
-      setUser(user)
+      dispatch(loginUser(username, password))
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -138,7 +133,7 @@ const App = () => {
 
   const sortedBlogs = [].concat(blogs)
     .sort((a, b) => a.likes > b.likes ? -1 : 1)
-    .map((blog) => 
+    .map((blog) =>
       <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemoveBlog={handleRemove} user={user}></Blog>
     )
 
@@ -147,11 +142,11 @@ const App = () => {
       <h2>blogs</h2>
       {notification.text !== undefined && <Notification.Notification message={notification.text}></Notification.Notification>}
       {notification.error !== undefined && <Notification.ErrorNotification message={notification.error}></Notification.ErrorNotification>}
-      {user === null && loginForm()}
-      {user !== null &&
+      {reduxUser.username === undefined && loginForm()}
+      {reduxUser.username !== undefined &&
         <div>
           <ul>
-            {user.username} logged in
+            {reduxUser.username} logged in
             <button onClick={logout}>Logout</button>
           </ul>
           {blogForm()}

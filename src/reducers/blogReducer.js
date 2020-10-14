@@ -1,13 +1,15 @@
+/* eslint-disable no-case-declarations */
+/* eslint-disable indent */
 import blogService from '../services/blogs'
 
 const reducer = (state = [], action) => {
   switch(action.type) {
-    case 'NEW_BLOG':  
+    case 'NEW_BLOG':
       return [...state, action.data]
     case 'LIKE':
       const id = action.data.id
       const blogToEdit = action.data.likedBlog
-      return state.map(blog => 
+      return state.map(blog =>
         blog.id !== id ? blog : blogToEdit
       )
     case 'GET':
