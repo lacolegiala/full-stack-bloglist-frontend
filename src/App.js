@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
-import loginService from './services/login'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
@@ -50,8 +49,7 @@ const App = () => {
 
   const logout = () => {
     try {
-      window.localStorage.removeItem('loggedBlogappUser')
-      setUser(null)
+      dispatch(logoutUser())
       dispatch(setNotification('Logged out', 3))
       setUsername('')
       setPassword('')
@@ -134,7 +132,7 @@ const App = () => {
   const sortedBlogs = [].concat(blogs)
     .sort((a, b) => a.likes > b.likes ? -1 : 1)
     .map((blog) =>
-      <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemoveBlog={handleRemove} user={user}></Blog>
+      <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemoveBlog={handleRemove} user={reduxUser}></Blog>
     )
 
   return (
