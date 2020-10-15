@@ -3,9 +3,7 @@
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 
-const initialState = {
-  user: undefined
-}
+const initialState = null
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
@@ -14,6 +12,8 @@ const reducer = (state = initialState, action) => {
       return loggedInUser
     case 'LOGOUT':
       return initialState
+    case 'REMEMBER_USER':
+      return state
     default:
       return state
   }
@@ -42,6 +42,19 @@ export const logoutUser = () => {
     dispatch({
       type: 'LOGOUT'
     })
+  }
+}
+
+export const rememberUser = () => {
+  return async dispatch => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      blogService.setToken(user.token)
+      dispatch({
+        type: 'REMEMBER_USER'
+      })
+    }
   }
 }
 

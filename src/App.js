@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
@@ -12,7 +11,6 @@ import { loginUser, logoutUser } from './reducers/userReducer'
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
   const dispatch = useDispatch()
@@ -31,10 +29,9 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+      dispatch({ type: 'LOGIN', data: user })
     }
-  }, [])
+  }, [dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -140,8 +137,8 @@ const App = () => {
       <h2>blogs</h2>
       {notification.text !== undefined && <Notification.Notification message={notification.text}></Notification.Notification>}
       {notification.error !== undefined && <Notification.ErrorNotification message={notification.error}></Notification.ErrorNotification>}
-      {reduxUser.username === undefined && loginForm()}
-      {reduxUser.username !== undefined &&
+      {reduxUser === null && loginForm()}
+      {reduxUser !== null &&
         <div>
           <ul>
             {reduxUser.username} logged in
