@@ -45,17 +45,5 @@ export const logoutUser = () => {
   }
 }
 
-export const rememberUser = () => {
-  return async dispatch => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      blogService.setToken(user.token)
-      dispatch({
-        type: 'REMEMBER_USER'
-      })
-    }
-  }
-}
 
 export default reducer
