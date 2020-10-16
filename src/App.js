@@ -3,10 +3,17 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import User from './components/User'
 import { useDispatch, useSelector } from 'react-redux'
 import { voteAction, createBlog, removeBlog, initializeBlogs } from './reducers/blogReducer'
 import { setNotification, setErrorNotification } from './reducers/notificationReducer'
-import { loginUser, logoutUser } from './reducers/userReducer'
+import { loginUser, logoutUser } from './reducers/loginReducer'
+import { getAllUsers } from './reducers/userReducer'
+import {
+  BrowserRouter as Router,
+  Switch, Route
+} from "react-router-dom"
+
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -17,13 +24,16 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(getAllUsers())
   }, [dispatch])
 
   const blogs = useSelector(state => state.blogs)
 
   const notification = useSelector(state => state.notifications)
 
-  const reduxUser = useSelector(state => state.user)
+  const user = useSelector(state => state.loggedInUser)
+
+  const userList = useSelector(state => state.users)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -129,26 +139,33 @@ const App = () => {
   const sortedBlogs = [].concat(blogs)
     .sort((a, b) => a.likes > b.likes ? -1 : 1)
     .map((blog) =>
-      <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemoveBlog={handleRemove} user={reduxUser}></Blog>
+      <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemoveBlog={handleRemove} user={user}></Blog>
     )
 
+
   return (
-    <div>
-      <h2>blogs</h2>
-      {notification.text !== undefined && <Notification.Notification message={notification.text}></Notification.Notification>}
-      {notification.error !== undefined && <Notification.ErrorNotification message={notification.error}></Notification.ErrorNotification>}
-      {reduxUser === null && loginForm()}
-      {reduxUser !== null &&
-        <div>
-          <ul>
-            {reduxUser.username} logged in
-            <button onClick={logout}>Logout</button>
-          </ul>
-          {blogForm()}
-          {sortedBlogs}
-        </div>
-      }
-    </div>
+    <Router>
+      <div>
+        <h2>blogs</h2>
+        {notification.text !== undefined && <Notification.Notification message={notification.text}></Notification.Notification>}
+        {notification.error !== undefined && <Notification.ErrorNotification message={notification.error}></Notification.ErrorNotification>}
+        {user === null && loginForm()}
+        {user !== null &&
+          <div>
+            <ul>
+              {user.username} logged in
+              <button onClick={logout}>Logout</button>
+            </ul>
+            {blogForm()}
+            {sortedBlogs}
+            <Route path='/users'>
+              <h2>users</h2>
+              <User users={userList}></User>
+            </Route>
+          </div>
+        }
+      </div>
+    </Router>
   )
 }
 

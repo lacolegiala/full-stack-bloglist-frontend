@@ -1,49 +1,27 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable indent */
-import loginService from '../services/login'
-import blogService from '../services/blogs'
 
-const initialState = null
+import userService from'../services/users'
 
-const reducer = (state = initialState, action) => {
+
+const reducer = (state = [], action) => {
   switch(action.type) {
-    case 'LOGIN':
-      const loggedInUser = action.data
-      return loggedInUser
-    case 'LOGOUT':
-      return initialState
-    case 'REMEMBER_USER':
-      return state
+    case 'GET_USERS':
+      const userList = action.data
+      return userList
     default:
       return state
   }
 }
 
-
-export const loginUser = (username, password) => {
+export const getAllUsers = () => {
   return async dispatch => {
-    const user = await loginService.login({
-      username, password
-    })
-    window.localStorage.setItem(
-      'loggedBlogappUser', JSON.stringify(user)
-    )
-    blogService.setToken(user.token)
+    const users = await userService.getAll()
     dispatch({
-      type: 'LOGIN',
-      data: user
+      type: 'GET_USERS',
+      data: users
     })
   }
 }
-
-export const logoutUser = () => {
-  return async dispatch => {
-    window.localStorage.removeItem('loggedBlogappUser')
-    dispatch({
-      type: 'LOGOUT'
-    })
-  }
-}
-
 
 export default reducer

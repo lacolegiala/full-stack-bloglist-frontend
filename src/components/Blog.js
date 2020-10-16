@@ -1,5 +1,4 @@
 /* eslint-disable linebreak-style */
-//Fix later
 import React, { useState } from 'react'
 
 const Blog = ({ blog, handleLike, handleRemoveBlog, user }) => {
