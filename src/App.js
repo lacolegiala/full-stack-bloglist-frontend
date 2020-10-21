@@ -1,24 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import User from './components/User'
+import LoginInfo from './components/LoginInfo'
+import LoginForm from './components/LoginForm'
 import { useDispatch, useSelector } from 'react-redux'
 import { voteAction, createBlog, removeBlog, initializeBlogs } from './reducers/blogReducer'
 import { setNotification, setErrorNotification } from './reducers/notificationReducer'
-import { loginUser, logoutUser } from './reducers/loginReducer'
 import { getAllUsers } from './reducers/userReducer'
 import {
   BrowserRouter as Router,
-  Switch, Route
-} from "react-router-dom"
-
+  Switch, Route, Redirect
+} from 'react-router-dom'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-
   const blogFormRef = useRef()
   const dispatch = useDispatch()
 
@@ -42,29 +39,6 @@ const App = () => {
       dispatch({ type: 'LOGIN', data: user })
     }
   }, [dispatch])
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      dispatch(loginUser(username, password))
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      dispatch(setErrorNotification('wrong credentials', 3))
-    }
-  }
-
-  const logout = () => {
-    try {
-      dispatch(logoutUser())
-      dispatch(setNotification('Logged out', 3))
-      setUsername('')
-      setPassword('')
-    }
-    catch (exception) {
-      dispatch(setErrorNotification('Logging out failed', 3))
-    }
-  }
 
   const addBlog = async (blogObject) => {
     try {
@@ -98,34 +72,6 @@ const App = () => {
     }
   }
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <h2>Login</h2>
-      <div>
-        username
-        <input
-          id='username'
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          id='password'
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button id='login' type="submit">login</button>
-    </form>
-  )
-
-
   const blogForm = () => {
     return (
       <div>
@@ -142,28 +88,50 @@ const App = () => {
       <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemoveBlog={handleRemove} user={user}></Blog>
     )
 
+  function PrivateRoute({ children, ...rest }) {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    return (
+      <Route
+        {...rest}
+        render={({ location }) =>
+          loggedUserJSON ? (
+            children
+          ) : (
+            <Redirect
+              to={{
+                pathname: '/',
+                state: { from: location }
+              }}
+            />
+          )
+        }
+      />
+    )
+  }
+
 
   return (
     <Router>
+      {user !== null &&
+        <LoginInfo user={user}></LoginInfo>
+      }
+      {notification.text !== undefined && <Notification.Notification message={notification.text}></Notification.Notification>}
+      {notification.error !== undefined && <Notification.ErrorNotification message={notification.error}></Notification.ErrorNotification>}
       <div>
-        <h2>blogs</h2>
-        {notification.text !== undefined && <Notification.Notification message={notification.text}></Notification.Notification>}
-        {notification.error !== undefined && <Notification.ErrorNotification message={notification.error}></Notification.ErrorNotification>}
-        {user === null && loginForm()}
-        {user !== null &&
-          <div>
-            <ul>
-              {user.username} logged in
-              <button onClick={logout}>Logout</button>
-            </ul>
+        <Switch>
+          <PrivateRoute path='/users'>
+            <h2>users</h2>
+            <User users={userList}></User>
+          </PrivateRoute>
+          <PrivateRoute path='/blogs'>
+            <h2>blogs</h2>
             {blogForm()}
             {sortedBlogs}
-            <Route path='/users'>
-              <h2>users</h2>
-              <User users={userList}></User>
-            </Route>
-          </div>
-        }
+          </PrivateRoute>
+          <Route exact path='/'>
+            <LoginForm></LoginForm>
+          </Route>
+        </Switch>
       </div>
     </Router>
   )

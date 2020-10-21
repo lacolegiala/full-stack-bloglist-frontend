@@ -2,6 +2,7 @@
 /* eslint-disable indent */
 import loginService from '../services/login'
 import blogService from '../services/blogs'
+import { setErrorNotification } from './notificationReducer'
 
 const initialState = null
 
@@ -18,19 +19,24 @@ const reducer = (state = initialState, action) => {
 }
 
 
-export const loginUser = (username, password) => {
+export const loginUser = (username, password, onSuccess) => {
   return async dispatch => {
-    const user = await loginService.login({
-      username, password
-    })
-    window.localStorage.setItem(
-      'loggedBlogappUser', JSON.stringify(user)
-    )
-    blogService.setToken(user.token)
-    dispatch({
-      type: 'LOGIN',
-      data: user
-    })
+    try {
+      const user = await loginService.login({
+        username, password
+      })
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      )
+      blogService.setToken(user.token)
+      dispatch({
+        type: 'LOGIN',
+        data: user
+      })
+      onSuccess()
+    } catch (error) {
+      dispatch(setErrorNotification('wrong credentials', 3))
+    }
   }
 }
 
