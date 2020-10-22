@@ -5,12 +5,12 @@ import { loginUser } from '../reducers/loginReducer'
 
 const LoginForm = () => {
   const history = useHistory()
-  let location = useLocation()
+  const location = useLocation()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const dispatch = useDispatch()
-  let { from } = location.state || { from: { pathname: '/' } }
+  let { from } = location.state || { from: { pathname: '/blogs' } }
 
   const handleLogin = (event) => {
     event.preventDefault()
@@ -18,9 +18,6 @@ const LoginForm = () => {
       setUsername('')
       setPassword('')
       history.replace(from)
-      if (from.pathname !== '/users') {
-        history.push('/blogs')
-      }
     }))
   }
 
