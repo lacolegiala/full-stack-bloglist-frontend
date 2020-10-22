@@ -1,21 +1,26 @@
 import React, { useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { loginUser } from '../reducers/loginReducer'
 
 const LoginForm = () => {
   const history = useHistory()
+  let location = useLocation()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const dispatch = useDispatch()
+  let { from } = location.state || { from: { pathname: '/' } }
 
   const handleLogin = (event) => {
     event.preventDefault()
     dispatch(loginUser(username, password, () => {
       setUsername('')
       setPassword('')
-      history.push('/blogs')
+      history.replace(from)
+      if (from.pathname !== '/users') {
+        history.push('/blogs')
+      }
     }))
   }
 
