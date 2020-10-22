@@ -9,10 +9,11 @@ const IndividualUser = () => {
 
 
   useEffect(() => {
-    (async () => {
+    async function getUser () {
       setUser(await userService.getOne(id))
-    })()
-  }, [])
+    }
+    getUser()
+  }, [id])
 
   return (
     <div>
