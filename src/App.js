@@ -6,6 +6,7 @@ import Togglable from './components/Togglable'
 import User from './components/User'
 import LoginInfo from './components/LoginInfo'
 import LoginForm from './components/LoginForm'
+import IndividualUser from './components/IndividualUser'
 import { useDispatch, useSelector } from 'react-redux'
 import { voteAction, createBlog, removeBlog, initializeBlogs } from './reducers/blogReducer'
 import { setNotification, setErrorNotification } from './reducers/notificationReducer'
@@ -119,7 +120,7 @@ const App = () => {
       {notification.error !== undefined && <Notification.ErrorNotification message={notification.error}></Notification.ErrorNotification>}
       <div>
         <Switch>
-          <PrivateRoute path='/users'>
+          <PrivateRoute exact path='/users'>
             <h2>users</h2>
             <User users={userList}></User>
           </PrivateRoute>
@@ -127,6 +128,9 @@ const App = () => {
             <h2>blogs</h2>
             {blogForm()}
             {sortedBlogs}
+          </PrivateRoute>
+          <PrivateRoute path='/users/:id'>
+            <IndividualUser></IndividualUser>
           </PrivateRoute>
           <Route exact path='/'>
             <LoginForm></LoginForm>

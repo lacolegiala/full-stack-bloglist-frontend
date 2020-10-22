@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const User = (props) => {
 
@@ -14,7 +15,7 @@ const User = (props) => {
         {props.users.map(user =>
           <tr key={user.id}>
             <td>
-              {user.name ? user.name : '(no name)'}
+              <Link to={'/users/' + user.id}>{user.name ? user.name : '(no name)'}</Link>
             </td>
             <td>
               {user.blogs.length}
