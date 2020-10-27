@@ -12,7 +12,6 @@ const LoginInfo = (props) => {
     try {
       dispatch(logoutUser())
       dispatch(setNotification('Logged out', 3))
-      console.log('LOGGING OUT')
     }
     catch (exception) {
       console.log(exception)
