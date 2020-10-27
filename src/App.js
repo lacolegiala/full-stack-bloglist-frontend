@@ -4,7 +4,7 @@ import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import User from './components/User'
-import LoginInfo from './components/LoginInfo'
+import NavigationBar from './components/NavigationBar'
 import LoginForm from './components/LoginForm'
 import IndividualUser from './components/IndividualUser'
 import IndividualBlog from './components/IndividualBlog'
@@ -115,7 +115,7 @@ const App = () => {
   return (
     <Router>
       {user !== null &&
-        <LoginInfo user={user}></LoginInfo>
+        <NavigationBar user={user}></NavigationBar>
       }
       {notification.text !== undefined && <Notification.Notification message={notification.text}></Notification.Notification>}
       {notification.error !== undefined && <Notification.ErrorNotification message={notification.error}></Notification.ErrorNotification>}

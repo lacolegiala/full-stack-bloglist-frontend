@@ -1,5 +1,5 @@
 import React from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setNotification, setErrorNotification } from '../reducers/notificationReducer'
 import { logoutUser } from '../reducers/loginReducer'
@@ -22,6 +22,8 @@ const LoginInfo = (props) => {
   return (
     <div>
       <ul>
+        <Link to='/blogs'>blogs</Link>
+        <Link to='/users'>users</Link>
         {props.user.username} logged in
         <button onClick={ () => {
           history.push('/')
