@@ -14,7 +14,6 @@ const IndividualBlog = (props) => {
     async function getBlog () {
       setBlog(await blogService.getOne(id))
       setComments(await blogService.getComments(id))
-      console.log('comeeeentstststststs', comments)
     }
     getBlog()
   }, [id])

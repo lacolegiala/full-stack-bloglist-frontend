@@ -43,7 +43,6 @@ const getOne = async (id) => {
 const getComments = async (id) => {
   const request = axios.get(`${baseUrl}/${id}/comments`)
   const response = await request
-  console.log('responseeeee', response)
   return response.data
 }
 
