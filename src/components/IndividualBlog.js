@@ -5,6 +5,7 @@ import blogService from '../services/blogs'
 
 const IndividualBlog = (props) => {
   const [ blog, setBlog ] = useState(undefined)
+  const [ comments, setComments ] = useState([])
   const history = useHistory()
 
   const { id } = useParams()
@@ -12,6 +13,8 @@ const IndividualBlog = (props) => {
   useEffect(() => {
     async function getBlog () {
       setBlog(await blogService.getOne(id))
+      setComments(await blogService.getComments(id))
+      console.log('comeeeentstststststs', comments)
     }
     getBlog()
   }, [id])
@@ -65,6 +68,17 @@ const IndividualBlog = (props) => {
             <ul>
               <button onClick={removeBlog}>Remove</button>
             </ul>
+          }
+          <h2>comments</h2>
+          {comments.length > 0 &&
+            <div>
+              {comments.map(comment =>
+                <li key={comment.id}>{comment.text}</li>
+              )}
+            </div>
+          }
+          {comments.length === 0 &&
+            <div>No comments yet</div>
           }
         </div>
       }

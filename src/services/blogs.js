@@ -40,4 +40,11 @@ const getOne = async (id) => {
   return response.data
 }
 
-export default { getAll, create, setToken, edit, remove, getOne }
+const getComments = async (id) => {
+  const request = axios.get(`${baseUrl}/${id}/comments`)
+  const response = await request
+  console.log('responseeeee', response)
+  return response.data
+}
+
+export default { getAll, create, setToken, edit, remove, getOne, getComments }
