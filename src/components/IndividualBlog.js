@@ -15,7 +15,6 @@ const IndividualBlog = (props) => {
     async function getBlog () {
       setBlog(await blogService.getOne(id))
       setComments(await blogService.getComments(id))
-      console.log(newComment)
     }
     getBlog()
   }, [id, newComment])
@@ -48,10 +47,16 @@ const IndividualBlog = (props) => {
   }
 
   const addComment = async (event) => {
-    event.preventDefault()
-    const comment = { text: newComment }
-    await blogService.addComment(blog.id, comment)
-    setComments(comments.concat(newComment))
+    try {
+      event.preventDefault()
+      const comment = { text: newComment }
+      const commentToAdd = await blogService.addComment(blog.id, comment)
+      setComments(comments.concat(commentToAdd))
+      setNewComment('')
+    } catch (error) {
+      alert('Comment could not be added for some reason')
+      console.log(error)
+    }
   }
 
 
