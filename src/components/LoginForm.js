@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { loginUser } from '../reducers/loginReducer'
+import { Form } from 'react-bootstrap'
 
 const LoginForm = () => {
   const history = useHistory()
@@ -23,30 +24,25 @@ const LoginForm = () => {
 
 
   return (
-    <form onSubmit={handleLogin}>
+    <Form onSubmit={handleLogin}>
       <h2>Login</h2>
-      <div>
-        username
-        <input
-          id='username'
-          type="text"
-          value={username}
-          name="Username"
+      <Form.Group controlId='username'>
+        <Form.Label>username</Form.Label>
+        <Form.Control
+          placeholder='Enter username'
           onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          id='password'
-          type="password"
-          value={password}
-          name="Password"
+        ></Form.Control>
+      </Form.Group>
+      <Form.Group controlId='password'>
+        <Form.Label>Password</Form.Label>
+        <Form.Control
+          type='password'
+          placeholder='Enter password'
           onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
+        ></Form.Control>
+      </Form.Group>
       <button id='login' type="submit">login</button>
-    </form>
+    </Form>
   )
 }
 
