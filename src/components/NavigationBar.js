@@ -3,6 +3,7 @@ import { useHistory, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setNotification, setErrorNotification } from '../reducers/notificationReducer'
 import { logoutUser } from '../reducers/loginReducer'
+import { Breadcrumb } from 'react-bootstrap'
 
 const LoginInfo = (props) => {
   const history = useHistory()
@@ -21,15 +22,15 @@ const LoginInfo = (props) => {
 
   return (
     <div>
-      <ul>
-        <Link to='/blogs'>blogs</Link>
-        <Link to='/users'>users</Link>
-        {props.user.username} logged in
-        <button onClick={ () => {
-          history.push('/')
-          logout()
-        }}>Logout</button>
-      </ul>
+      <Breadcrumb>
+        <Breadcrumb.Item href='/blogs'>blogs</Breadcrumb.Item>
+        <Breadcrumb.Item href='/users'>users</Breadcrumb.Item>
+      </Breadcrumb>
+      {props.user.username} logged in
+      <button onClick={ () => {
+        history.push('/')
+        logout()
+      }}>Logout</button>
     </div>
   )
 }
