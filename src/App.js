@@ -16,6 +16,7 @@ import {
   BrowserRouter as Router,
   Switch, Route, Redirect
 } from 'react-router-dom'
+import { ListGroup }from 'react-bootstrap'
 
 const App = () => {
   const blogFormRef = useRef()
@@ -84,11 +85,29 @@ const App = () => {
     )
   }
 
-  const sortedBlogs = [].concat(blogs)
-    .sort((a, b) => a.likes > b.likes ? -1 : 1)
-    .map((blog) =>
-      <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemoveBlog={handleRemove} user={user}></Blog>
+  // const sortedBlogs = [].concat(blogs)
+  //   .sort((a, b) => a.likes > b.likes ? -1 : 1)
+  //   .map((blog) =>
+  //     <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemoveBlog={handleRemove} user={user}></Blog>
+  //   )
+
+  const sortBlogs = () => {
+
+    const sortedBlogs = [].concat(blogs)
+      .sort((a, b) => a.likes > b.likes ? -1 : 1)
+
+    return (
+      <ListGroup>
+        {sortedBlogs.map((blog) =>
+          <ListGroup.Item key={blog.id}>
+            <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemoveBlog={handleRemove} user={user}></Blog>
+          </ListGroup.Item>
+        )}
+      </ListGroup>
     )
+  }
+
+
 
   function PrivateRoute({ children, ...rest }) {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -129,7 +148,7 @@ const App = () => {
             <PrivateRoute exact path='/blogs'>
               <h2>blogs</h2>
               {blogForm()}
-              {sortedBlogs}
+              {sortBlogs()}
             </PrivateRoute>
             <PrivateRoute path='/users/:id'>
               <IndividualUser></IndividualUser>
