@@ -137,7 +137,9 @@ const App = () => {
             <IndividualBlog handleLike={handleLike} user={user} handleRemoveBlog={handleRemove}></IndividualBlog>
           </PrivateRoute>
           <Route exact path='/'>
-            <LoginForm></LoginForm>
+            {user === null &&
+              <LoginForm></LoginForm>
+            }
           </Route>
         </Switch>
       </div>

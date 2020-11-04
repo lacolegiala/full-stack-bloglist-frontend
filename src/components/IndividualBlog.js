@@ -6,6 +6,7 @@ import blogService from '../services/blogs'
 const IndividualBlog = (props) => {
   const [ blog, setBlog ] = useState(undefined)
   const [ comments, setComments ] = useState([])
+  const [ newComment, setNewComment ] = useState('')
   const history = useHistory()
 
   const { id } = useParams()
@@ -14,9 +15,10 @@ const IndividualBlog = (props) => {
     async function getBlog () {
       setBlog(await blogService.getOne(id))
       setComments(await blogService.getComments(id))
+      console.log(newComment)
     }
     getBlog()
-  }, [id])
+  }, [id, newComment])
 
   const like = async (event) => {
     event.preventDefault()
@@ -45,6 +47,13 @@ const IndividualBlog = (props) => {
     }
   }
 
+  const addComment = async (event) => {
+    event.preventDefault()
+    const comment = { text: newComment }
+    await blogService.addComment(blog.id, comment)
+    setComments(comments.concat(newComment))
+  }
+
 
   return (
     <div>
@@ -69,6 +78,15 @@ const IndividualBlog = (props) => {
             </ul>
           }
           <h2>comments</h2>
+          <form onSubmit={addComment}>
+            <input
+              id='comment'
+              type='text'
+              value={newComment}
+              onChange={({ target }) => setNewComment(target.value)}
+            ></input>
+            <button id='add-comment' type='submit'>Add a new comment</button>
+          </form>
           {comments.length > 0 &&
             <div>
               {comments.map(comment =>
