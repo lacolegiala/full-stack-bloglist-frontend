@@ -113,37 +113,39 @@ const App = () => {
 
 
   return (
-    <Router>
-      {user !== null &&
-        <NavigationBar user={user}></NavigationBar>
-      }
-      {notification.text !== undefined && <Notification.Notification message={notification.text}></Notification.Notification>}
-      {notification.error !== undefined && <Notification.ErrorNotification message={notification.error}></Notification.ErrorNotification>}
-      <div>
-        <Switch>
-          <PrivateRoute exact path='/users'>
-            <h2>users</h2>
-            <User users={userList}></User>
-          </PrivateRoute>
-          <PrivateRoute exact path='/blogs'>
-            <h2>blogs</h2>
-            {blogForm()}
-            {sortedBlogs}
-          </PrivateRoute>
-          <PrivateRoute path='/users/:id'>
-            <IndividualUser></IndividualUser>
-          </PrivateRoute>
-          <PrivateRoute path='/blogs/:id'>
-            <IndividualBlog handleLike={handleLike} user={user} handleRemoveBlog={handleRemove}></IndividualBlog>
-          </PrivateRoute>
-          <Route exact path='/'>
-            {user === null &&
-              <LoginForm></LoginForm>
-            }
-          </Route>
-        </Switch>
-      </div>
-    </Router>
+    <div className='container'>
+      <Router>
+        {user !== null &&
+          <NavigationBar user={user}></NavigationBar>
+        }
+        {notification.text !== undefined && <Notification.Notification message={notification.text}></Notification.Notification>}
+        {notification.error !== undefined && <Notification.ErrorNotification message={notification.error}></Notification.ErrorNotification>}
+        <div>
+          <Switch>
+            <PrivateRoute exact path='/users'>
+              <h2>users</h2>
+              <User users={userList}></User>
+            </PrivateRoute>
+            <PrivateRoute exact path='/blogs'>
+              <h2>blogs</h2>
+              {blogForm()}
+              {sortedBlogs}
+            </PrivateRoute>
+            <PrivateRoute path='/users/:id'>
+              <IndividualUser></IndividualUser>
+            </PrivateRoute>
+            <PrivateRoute path='/blogs/:id'>
+              <IndividualBlog handleLike={handleLike} user={user} handleRemoveBlog={handleRemove}></IndividualBlog>
+            </PrivateRoute>
+            <Route exact path='/'>
+              {user === null &&
+                <LoginForm></LoginForm>
+              }
+            </Route>
+          </Switch>
+        </div>
+      </Router>
+    </div>
   )
 }
 
